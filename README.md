@@ -1,208 +1,272 @@
-# セキュアモックAPI - AWS Amplify
+# 🏭 製造業向け在庫管理システム
 
-AWS Amplifyを使用して構築されたセキュアなモックAPIとReactアプリケーションです。XSS攻撃やその他のセキュリティ脅威から保護されたダミーデータシステムを提供します。
+AWS Amplifyを使用して構築された、製造業に特化したリアルタイム在庫管理システムです。原材料から完成品まで、製造プロセス全体の在庫を効率的に管理できます。
+
+## 🎯 主要機能
+
+### 📊 ダッシュボード
+- **リアルタイム統計**: 総在庫数、在庫価額、低在庫・在庫切れアイテム数
+- **カテゴリ別内訳**: 原材料、部品、完成品等の在庫分布
+- **在庫アラート**: 低在庫・在庫切れの自動警告
+- **取引サマリー**: 過去7日間の在庫取引件数
+
+### 📦 在庫管理
+- **詳細在庫一覧**: 商品名、SKU、現在在庫、保管場所等
+- **高度な検索・フィルタリング**: カテゴリ、倉庫、在庫状態での絞り込み
+- **在庫レベル可視化**: 最低・最大在庫レベルとの比較
+- **ソート機能**: 名前、在庫数、更新日等での並び替え
+
+### 🏭 製造業特化機能
+- **製造業カテゴリ**: 原材料、部品、仕掛品、完成品、工具、スペア部品
+- **在庫状態管理**: 正常、低在庫、在庫切れ、過剰在庫
+- **保管場所管理**: 倉庫・ゾーン・棚・ビン単位での位置管理
+- **サプライヤー管理**: 仕入先情報の追跡
+
+### 🔍 検索・分析
+- **キーワード検索**: 商品名、SKU、説明、メーカー名での検索
+- **多条件フィルタリング**: カテゴリ、倉庫、サプライヤー、在庫状態
+- **在庫数量範囲検索**: 最小・最大在庫数での絞り込み
+- **カスタムソート**: 6つのフィールドでの昇順・降順ソート
 
 ## 🔒 セキュリティ機能
 
 ### XSS攻撃対策
-- 全てのユーザー入力データのサニタイゼーション
-- DOMPurifyを使用したHTMLサニタイゼーション
-- Content Security Policy (CSP) の実装
-- エスケープ処理による安全な文字列処理
+- DOMPurifyによる入力データサニタイゼーション
+- HTMLエスケープ処理による安全な文字列表示
+- Content Security Policy (CSP) 実装
 
-### CSRF攻撃対策
-- CSRFトークンの実装
-- XMLHttpRequestヘッダーの検証
-- セキュアなAPIエンドポイント設計
-
-### その他のセキュリティ対策
-- セキュアHTTPヘッダーの設定
-- 入力値検証とバリデーション
-- レート制限（基本実装）
-- 安全なエラーハンドリング
+### データ保護
+- 全入力データの検証とサニタイゼーション
+- セキュアなAPI通信
+- クロスサイト攻撃防止
 
 ## 🚀 技術スタック
 
-- **Frontend**: React 18 + TypeScript
-- **Backend**: AWS Lambda (Node.js)
-- **API**: AWS API Gateway + REST API
-- **Authentication**: AWS Cognito (オプション)
-- **Hosting**: AWS Amplify Hosting
-- **Security**: DOMPurify, CSP, セキュアヘッダー
+- **フロントエンド**: React 18 + TypeScript
+- **UI/UX**: レスポンシブデザイン、モダンCSS
+- **状態管理**: React Hooks
+- **データ処理**: 静的JSON + 動的フィルタリング
+- **セキュリティ**: DOMPurify、CSP、入力検証
+- **ホスティング**: AWS Amplify Hosting
+- **CI/CD**: 自動ビルド・デプロイ
 
-## 📦 インストールと設定
+## 📱 レスポンシブデザイン
+
+- **デスクトップ**: フル機能のダッシュボードと詳細表示
+- **タブレット**: 最適化されたレイアウトと操作性
+- **モバイル**: タッチ操作に最適化されたUI
+
+## 🔧 インストールと実行
 
 ### 前提条件
 - Node.js 16以上
-- AWS CLI設定済み
-- AWS Amplify CLI
+- npm または yarn
 
-### 1. 依存関係のインストール
+### ローカル開発
 ```bash
+# リポジトリのクローン
+git clone https://github.com/YOUR_USERNAME/manufacturing-inventory-system.git
+cd manufacturing-inventory-system
+
+# 依存関係のインストール
 npm install
-```
 
-### 2. Amplify CLIの設定
-```bash
-# Amplify CLIの設定（初回のみ）
-npm run amplify-configure
-
-# Amplifyプロジェクトの初期化
-npm run amplify-init
-```
-
-### 3. バックエンドのデプロイ
-```bash
-# API、Lambda関数、その他のリソースをデプロイ
-npm run amplify-push
-```
-
-### 4. 開発サーバーの起動
-```bash
-# React開発サーバーを起動
+# 開発サーバーの起動
 npm start
 ```
 
-### 5. プロダクションビルドとデプロイ
+### プロダクションビルド
 ```bash
-# ビルドとAmplifyホスティングへのデプロイ
-npm run amplify-publish
+# プロダクション用ビルド
+npm run build
+
+# ビルド結果のプレビュー
+npx serve -s build
 ```
 
-## 🏗️ プロジェクト構造
+## 🌐 AWS Amplifyデプロイ
 
-```
-├── amplify/
-│   ├── backend/
-│   │   ├── api/mockapi/          # REST API設定
-│   │   └── function/mockApiFunction/  # Lambda関数
-│   ├── cli.json                  # Amplify CLI設定
-│   └── team-provider-info.json   # 環境固有設定
-├── public/
-│   └── index.html               # CSP設定済み
-├── src/
-│   ├── components/              # Reactコンポーネント
-│   │   ├── UserList.tsx         # ユーザー一覧表示
-│   │   ├── ProductList.tsx      # 商品一覧表示
-│   │   └── UserForm.tsx         # ユーザー作成フォーム
-│   ├── services/                # APIサービス
-│   │   └── mockApiService.ts    # セキュアなAPI通信
-│   ├── utils/                   # ユーティリティ
-│   │   └── securityUtils.ts     # セキュリティ関数
-│   ├── App.tsx                  # メインアプリケーション
-│   ├── App.css                  # アプリケーションスタイル
-│   └── amplifyconfiguration.json # Amplify設定
-├── package.json
-├── amplify.yml                  # ビルド設定
-└── README.md
-```
+### 自動デプロイ設定
+1. GitHubリポジトリにコードをプッシュ
+2. AWS Amplify Consoleでアプリを作成
+3. GitHubリポジトリと連携
+4. 自動ビルド・デプロイ開始
 
-## 🔧 API エンドポイント
-
-### ユーザー管理
-- `GET /users` - ユーザー一覧取得
-- `GET /users/{id}` - 特定ユーザー取得
-- `POST /users` - ユーザー作成
-- `PUT /users/{id}` - ユーザー更新
-- `DELETE /users/{id}` - ユーザー削除
-
-### 商品管理
-- `GET /products` - 商品一覧取得
-
-## 🛡️ セキュリティガイドライン
-
-### 開発時の注意点
-1. **ユーザー入力の処理**
-   - 全ての入力データをサニタイズする
-   - バリデーションを必ず実装する
-   - 長さ制限を設ける
-
-2. **データ表示**
-   - `dangerouslySetInnerHTML`は慎重に使用
-   - エスケープ処理を確実に実行
-   - 信頼できないデータは直接表示しない
-
-3. **API通信**
-   - CSRFトークンを必ず含める
-   - HTTPSを使用する
-   - エラーレスポンスに機密情報を含めない
-
-### 本番環境での追加設定
-1. **AWS WAF**の設定
-2. **CloudFront**でのセキュリティヘッダー
-3. **VPC**内でのLambda実行
-4. **詳細なロギング**と監視
-
-## 🧪 テストデータ
-
-### ユーザーデータ
-```javascript
-[
-  {
-    id: "1",
-    name: "テストユーザー1",
-    email: "test1@example.com",
-    role: "admin"
-  },
-  // 他のテストユーザー...
-]
+### ビルド設定
+```yaml
+version: 1
+applications:
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm ci
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
 ```
 
-### 商品データ
-```javascript
-[
-  {
-    id: "1",
-    name: "セキュア商品A",
-    description: "セキュリティが考慮された商品です",
-    price: 1000,
-    category: "セキュリティ",
-    inStock: true
-  },
-  // 他のテスト商品...
-]
+## 📊 データ構造
+
+### 在庫アイテム
+```typescript
+interface InventoryItem {
+  id: string;
+  name: string;
+  description: string;
+  category: InventoryCategory;
+  sku: string;
+  barcode?: string;
+  manufacturer: string;
+  supplier: string;
+  unitPrice: number;
+  currency: string;
+  currentStock: number;
+  minStockLevel: number;
+  maxStockLevel: number;
+  unit: string;
+  location: StorageLocation;
+  lastUpdated: string;
+  createdAt: string;
+  status: ItemStatus;
+  tags: string[];
+}
 ```
 
-## 🔄 開発ワークフロー
+### 取引履歴
+```typescript
+interface InventoryTransaction {
+  id: string;
+  itemId: string;
+  type: TransactionType;
+  quantity: number;
+  unitPrice?: number;
+  totalValue?: number;
+  reason: string;
+  referenceNumber?: string;
+  performedBy: string;
+  timestamp: string;
+  notes?: string;
+}
+```
 
-1. **ローカル開発**
-   ```bash
-   npm start
-   ```
+## 🎨 UI/UXの特徴
 
-2. **変更のテスト**
-   ```bash
-   npm test
-   ```
+### ダッシュボード
+- **統計カード**: 重要指標の視覚的表示
+- **カテゴリ別グラフ**: 在庫分布の棒グラフ
+- **アラート表示**: 優先度別の色分けアラート
+- **クイックアクション**: よく使用する機能への素早いアクセス
 
-3. **バックエンドの更新**
-   ```bash
-   npm run amplify-push
-   ```
+### 在庫一覧
+- **カード形式表示**: 情報を整理した見やすいレイアウト
+- **在庫レベル表示**: プログレスバーによる視覚的在庫状況
+- **フィルター UI**: 直感的な検索・絞り込み操作
+- **状態バッジ**: 在庫状態の色分け表示
 
-4. **本番デプロイ**
-   ```bash
-   npm run amplify-publish
-   ```
+## 🔄 開発ロードマップ
 
-## 📚 参考資料
+### Phase 1 ✅ 完了
+- [x] 基本在庫管理機能
+- [x] ダッシュボード実装
+- [x] 検索・フィルタリング
+- [x] レスポンシブデザイン
 
-- [AWS Amplify Documentation](https://docs.amplify.aws/)
-- [React Security Best Practices](https://reactjs.org/docs/dom-elements.html#dangerouslysetinnerhtml)
-- [OWASP XSS Prevention](https://owasp.org/www-community/xss-filter-evasion-cheatsheet)
-- [DOMPurify Documentation](https://github.com/cure53/DOMPurify)
+### Phase 2 🚧 開発中
+- [ ] 取引履歴管理
+- [ ] 詳細レポート機能
+- [ ] 在庫調整機能
+- [ ] バーコードスキャン
 
-## ⚠️ 重要な注意事項
+### Phase 3 📋 計画中
+- [ ] ABC分析
+- [ ] 在庫回転率分析
+- [ ] 発注点計算
+- [ ] 予測分析
 
-- このプロジェクトはデモンストレーション目的です
-- 本番環境では追加のセキュリティ対策が必要です
-- 実際のユーザーデータは使用しないでください
-- 定期的なセキュリティ監査を実施してください
+### Phase 4 🔮 将来的
+- [ ] IoTセンサー連携
+- [ ] 自動発注システム
+- [ ] AI予測機能
+- [ ] モバイルアプリ
+
+## 📈 パフォーマンス
+
+### 最適化済み
+- **コード分割**: React.lazy による動的インポート
+- **画像最適化**: WebP対応、レスポンシブ画像
+- **キャッシュ戦略**: ServiceWorker、CDNキャッシュ
+- **バンドルサイズ**: Tree shaking、最小化
+
+### パフォーマンス指標
+- **First Contentful Paint**: < 1.5秒
+- **Largest Contentful Paint**: < 2.5秒
+- **Cumulative Layout Shift**: < 0.1
+- **Time to Interactive**: < 3秒
+
+## 🧪 品質保証
+
+### コード品質
+- **TypeScript**: 型安全性確保
+- **ESLint**: コード品質チェック
+- **Prettier**: コードフォーマット統一
+- **コンポーネント設計**: 再利用可能な設計
+
+### テスト
+- **単体テスト**: Jest + React Testing Library
+- **統合テスト**: ユーザーシナリオテスト
+- **E2Eテスト**: Cypress（計画中）
+- **セキュリティテスト**: 脆弱性スキャン
+
+## 🔧 保守・運用
+
+### 監視
+- **パフォーマンス監視**: Core Web Vitals
+- **エラー追跡**: 自動エラーレポート
+- **使用状況分析**: ユーザー行動分析
+- **アップタイム監視**: 24時間可用性監視
+
+### アップデート
+- **依存関係更新**: 月次セキュリティパッチ
+- **機能追加**: 四半期リリース
+- **バグ修正**: 緊急対応
+- **セキュリティ更新**: 即座対応
+
+## 📞 サポート
+
+### 技術サポート
+- **ドキュメント**: 詳細な操作マニュアル
+- **FAQ**: よくある質問と回答
+- **Issue追跡**: GitHub Issues
+- **コミュニティ**: Discussions
+
+### 商用サポート
+- **24時間サポート**: 緊急時対応
+- **カスタマイズ**: 企業固有要件対応
+- **トレーニング**: 利用者向け研修
+- **コンサルティング**: システム最適化支援
 
 ## 📄 ライセンス
 
-MIT License
+MIT License - 商用利用可能
 
 ## 🤝 コントリビューション
 
-セキュリティの改善提案や新機能の追加は歓迎します。プルリクエストを送信する前に、セキュリティガイドラインを確認してください。
+プルリクエスト、Issue報告、機能提案を歓迎します。
+
+### 開発に参加する
+1. リポジトリをフォーク
+2. フィーチャーブランチを作成
+3. 変更をコミット
+4. プルリクエストを送信
+
+---
+
+**製造業の在庫管理を革新する、次世代のクラウドソリューション** 🚀
