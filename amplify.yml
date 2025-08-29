@@ -3,10 +3,15 @@ frontend:
   phases:
     preBuild:
       commands:
+        - echo "Starting pre-build..."
+        - node --version
+        - npm --version
         - npm ci
     build:
       commands:
+        - echo "Starting build..."
         - npm run build
+        - echo "Build completed successfully"
   artifacts:
     baseDirectory: build
     files:
