@@ -527,12 +527,12 @@ function App() {
                     
                     <div className="chart-content">
                       <div className="chart-grid">
-                        <div className="grid-line"></div>
-                        <div className="grid-line"></div>
-                        <div className="grid-line target-line"></div>
-                        <div className="grid-line"></div>
-                        <div className="grid-line"></div>
-                        <div className="grid-line"></div>
+                        <div className="grid-line" data-value="4.0"></div>
+                        <div className="grid-line" data-value="3.5"></div>
+                        <div className="grid-line target-line" data-value="3.0"></div>
+                        <div className="grid-line" data-value="2.5"></div>
+                        <div className="grid-line" data-value="2.0"></div>
+                        <div className="grid-line" data-value="1.5"></div>
                       </div>
                       
                       <div className="chart-bars">
@@ -541,7 +541,7 @@ function App() {
                             <div className="bar-container">
                               <div 
                                 className={`chart-bar ${item.status}`}
-                                style={{ height: `${(item.rate / 4) * 250}px` }}
+                                style={{ height: `${((item.rate - 1.5) / 2.5) * 250}px` }}
                                 title={`${item.period}: ${item.rate}回転`}
                               >
                                 <span className="bar-value">{item.rate}</span>
