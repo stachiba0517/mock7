@@ -665,197 +665,397 @@ body {
   line-height: 1.5;
 }
 
-/* ABC分析 */
-.abc-analysis {
+/* ドーナツチャート (ABC分析) */
+.abc-chart-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.donut-chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.donut-svg {
+  width: 300px;
+  height: 300px;
+  max-width: 100%;
+}
+
+.donut-segment {
+  transition: stroke-width 0.3s ease;
+  cursor: pointer;
+}
+
+.donut-segment:hover {
+  stroke-width: 45;
+}
+
+.donut-center-text {
+  fill: var(--primary-color);
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.abc-legend {
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
-.abc-card {
-  padding: 1.5rem;
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
   border-radius: var(--border-radius);
-  border-left: 4px solid;
   transition: var(--transition);
+  cursor: pointer;
 }
 
-.abc-card:hover {
+.legend-item:hover {
+  transform: translateX(5px);
+  box-shadow: var(--shadow);
+}
+
+.legend-item.abc-a {
+  background: linear-gradient(135deg, #fff5f5, #fed7d7);
+}
+
+.legend-item.abc-b {
+  background: linear-gradient(135deg, #fffbf0, #feebc8);
+}
+
+.legend-item.abc-c {
+  background: linear-gradient(135deg, #f0fff4, #c6f6d5);
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-item.abc-a .legend-color {
+  background: #e53e3e;
+}
+
+.legend-item.abc-b .legend-color {
+  background: #dd6b20;
+}
+
+.legend-item.abc-c .legend-color {
+  background: #38a169;
+}
+
+.legend-content {
+  flex: 1;
+}
+
+.legend-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.legend-label {
+  font-weight: 600;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+.legend-percentage {
+  font-weight: 700;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+
+.legend-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.legend-description {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+/* 棒グラフ (在庫回転率) */
+.bar-chart-container {
+  background: #f8f9fa;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e1e8ed;
+}
+
+.chart-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.chart-target {
+  font-size: 1rem;
+  color: #7f8c8d;
+  background: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 2px solid #e1e8ed;
+}
+
+.bar-chart {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 1rem;
+  height: 300px;
+}
+
+.chart-y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.y-label {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  text-align: right;
+  font-weight: 600;
+}
+
+.chart-content {
+  position: relative;
+  height: 100%;
+}
+
+.chart-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.grid-line {
+  height: 1px;
+  background: #e1e8ed;
+  width: 100%;
+}
+
+.target-line {
+  background: #3498db;
+  height: 2px;
+  position: relative;
+}
+
+.target-line::after {
+  content: "目標線";
+  position: absolute;
+  right: 10px;
+  top: -20px;
+  font-size: 0.75rem;
+  color: #3498db;
+  font-weight: 600;
+}
+
+.chart-bars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  padding: 10px 0 40px 0;
+}
+
+.bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.bar-container {
+  height: 250px;
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  justify-content: center;
+}
+
+.chart-bar {
+  width: 40px;
+  min-height: 20px;
+  border-radius: 8px 8px 0 0;
+  position: relative;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 5px;
+}
+
+.chart-bar:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+.chart-bar.above {
+  background: linear-gradient(180deg, var(--success-color), #2ecc71);
+}
+
+.chart-bar.below {
+  background: linear-gradient(180deg, var(--warning-color), #f1c40f);
+}
+
+.bar-value {
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.bar-label {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e1e8ed;
+}
+
+.chart-legend .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chart-legend .legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.chart-legend .legend-color.above {
+  background: linear-gradient(90deg, var(--success-color), #2ecc71);
+}
+
+.chart-legend .legend-color.below {
+  background: linear-gradient(90deg, var(--warning-color), #f1c40f);
+}
+
+/* レーダーチャート (在庫レベル分析) */
+.radar-chart-container {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 3rem;
+  align-items: center;
+}
+
+.radar-chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.radar-svg {
+  width: 400px;
+  height: 400px;
+  max-width: 100%;
+}
+
+.radar-point {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.radar-point:hover {
+  r: 8;
+  filter: brightness(1.2);
+}
+
+.radar-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.radar-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.radar-legend-item:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
 }
 
-.abc-a {
-  background: linear-gradient(135deg, #fff5f5, #fed7d7);
-  border-left-color: #e53e3e;
+.radar-legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.abc-b {
-  background: linear-gradient(135deg, #fffbf0, #feebc8);
-  border-left-color: #dd6b20;
+.radar-legend-content {
+  flex: 1;
 }
 
-.abc-c {
-  background: linear-gradient(135deg, #f0fff4, #c6f6d5);
-  border-left-color: #38a169;
+.radar-legend-label {
+  font-weight: 600;
+  color: var(--primary-color);
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
 }
 
-.abc-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.abc-header h4 {
-  margin: 0;
+.radar-legend-value {
+  font-weight: 700;
+  color: var(--primary-color);
   font-size: 1.2rem;
-  color: var(--primary-color);
+  margin-bottom: 0.25rem;
 }
 
-.abc-percentage {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary-color);
-}
-
-.abc-content .abc-items {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.abc-content .abc-value {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--success-color);
-  margin-bottom: 0.5rem;
-}
-
-.abc-content .abc-description {
-  font-size: 0.9rem;
-  color: #7f8c8d;
-}
-
-/* 在庫回転率 */
-.turnover-chart {
-  display: grid;
-  gap: 1rem;
-}
-
-.turnover-item {
-  display: grid;
-  grid-template-columns: 120px 1fr 100px;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: var(--border-radius);
-}
-
-.turnover-period {
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-.turnover-bar {
-  position: relative;
-  height: 30px;
-  background: #e1e8ed;
-  border-radius: 15px;
-  overflow: hidden;
-}
-
-.turnover-fill {
-  height: 100%;
-  border-radius: 15px;
-  position: relative;
-  transition: var(--transition);
-}
-
-.turnover-fill.above {
-  background: linear-gradient(90deg, var(--success-color), #2ecc71);
-}
-
-.turnover-fill.below {
-  background: linear-gradient(90deg, var(--warning-color), #f1c40f);
-}
-
-.turnover-rate {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: white;
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.turnover-target {
+.radar-legend-details {
   font-size: 0.85rem;
-  color: #7f8c8d;
-  text-align: center;
-}
-
-/* 在庫レベル分析 */
-.stock-level-analysis {
-  display: grid;
-  gap: 1.5rem;
-}
-
-.level-item {
-  padding: 1.5rem;
-  background: #f8f9fa;
-  border-radius: var(--border-radius);
-}
-
-.level-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.level-header h4 {
-  margin: 0;
-  color: var(--primary-color);
-}
-
-.level-percentage {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--primary-color);
-}
-
-.level-bar {
-  height: 20px;
-  background: #e1e8ed;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 1rem;
-}
-
-.level-fill {
-  height: 100%;
-  border-radius: 10px;
-  transition: var(--transition);
-}
-
-.level-fill.low {
-  background: linear-gradient(90deg, var(--danger-color), #ff6b6b);
-}
-
-.level-fill.normal {
-  background: linear-gradient(90deg, var(--success-color), #51cf66);
-}
-
-.level-fill.high {
-  background: linear-gradient(90deg, var(--warning-color), #ffd43b);
-}
-
-.level-details {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
   color: #7f8c8d;
 }
 
@@ -980,14 +1180,31 @@ body {
     color: #7f8c8d;
   }
 
-  .abc-analysis {
+  .abc-chart-container {
     grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
-  .turnover-item {
+  .radar-chart-container {
     grid-template-columns: 1fr;
-    text-align: center;
-    gap: 0.5rem;
+    gap: 2rem;
+  }
+
+  .bar-chart {
+    grid-template-columns: 40px 1fr;
+    height: 250px;
+  }
+
+  .chart-bars {
+    padding: 10px 0 30px 0;
+  }
+
+  .bar-container {
+    height: 200px;
+  }
+
+  .chart-bar {
+    width: 30px;
   }
 
   .transaction-controls, .report-controls {
@@ -997,5 +1214,16 @@ body {
 
   .filter-select {
     width: 100%;
+  }
+
+  .chart-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .chart-legend {
+    flex-direction: column;
+    gap: 1rem;
   }
 }

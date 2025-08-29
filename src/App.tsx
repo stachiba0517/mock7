@@ -378,20 +378,72 @@ function App() {
                 <p className="report-description">
                   在庫アイテムを価値と回転率で分類し、効率的な在庫管理を支援します
                 </p>
-                <div className="abc-analysis">
-                  {mockReportData.abcAnalysis.map((item) => (
-                    <div key={item.category} className={`abc-card abc-${item.category.toLowerCase()}`}>
-                      <div className="abc-header">
-                        <h4>クラス {item.category}</h4>
-                        <span className="abc-percentage">{item.percentage}%</span>
+                <div className="abc-chart-container">
+                  <div className="donut-chart">
+                    <svg viewBox="0 0 200 200" className="donut-svg">
+                      <circle cx="100" cy="100" r="80" fill="transparent" stroke="#e1e8ed" strokeWidth="40"/>
+                      
+                      {/* Class A: 15.6% */}
+                      <circle 
+                        cx="100" cy="100" r="80" 
+                        fill="transparent" 
+                        stroke="#e53e3e" 
+                        strokeWidth="40"
+                        strokeDasharray={`${15.6 * 5.02} 502`}
+                        strokeDashoffset="0"
+                        className="donut-segment"
+                        transform="rotate(-90 100 100)"
+                      />
+                      
+                      {/* Class B: 32.0% */}
+                      <circle 
+                        cx="100" cy="100" r="80" 
+                        fill="transparent" 
+                        stroke="#dd6b20" 
+                        strokeWidth="40"
+                        strokeDasharray={`${32.0 * 5.02} 502`}
+                        strokeDashoffset={`-${15.6 * 5.02}`}
+                        className="donut-segment"
+                        transform="rotate(-90 100 100)"
+                      />
+                      
+                      {/* Class C: 52.4% */}
+                      <circle 
+                        cx="100" cy="100" r="80" 
+                        fill="transparent" 
+                        stroke="#38a169" 
+                        strokeWidth="40"
+                        strokeDasharray={`${52.4 * 5.02} 502`}
+                        strokeDashoffset={`-${(15.6 + 32.0) * 5.02}`}
+                        className="donut-segment"
+                        transform="rotate(-90 100 100)"
+                      />
+                      
+                      <text x="100" y="95" textAnchor="middle" className="donut-center-text">
+                        <tspan x="100" dy="0" fontSize="24" fontWeight="700">147</tspan>
+                        <tspan x="100" dy="20" fontSize="12" fill="#7f8c8d">アイテム</tspan>
+                      </text>
+                    </svg>
+                  </div>
+                  
+                  <div className="abc-legend">
+                    {mockReportData.abcAnalysis.map((item) => (
+                      <div key={item.category} className={`legend-item abc-${item.category.toLowerCase()}`}>
+                        <div className="legend-color"></div>
+                        <div className="legend-content">
+                          <div className="legend-header">
+                            <span className="legend-label">クラス {item.category}</span>
+                            <span className="legend-percentage">{item.percentage}%</span>
+                          </div>
+                          <div className="legend-details">
+                            <div>{item.items} アイテム</div>
+                            <div>¥{item.value.toLocaleString()}</div>
+                            <div className="legend-description">{item.description}</div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="abc-content">
-                        <div className="abc-items">{item.items} アイテム</div>
-                        <div className="abc-value">¥{item.value.toLocaleString()}</div>
-                        <div className="abc-description">{item.description}</div>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
@@ -402,20 +454,61 @@ function App() {
                 <p className="report-description">
                   月別の在庫回転率を表示し、在庫効率の改善点を特定します
                 </p>
-                <div className="turnover-chart">
-                  {mockReportData.turnoverRate.map((item, index) => (
-                    <div key={index} className="turnover-item">
-                      <div className="turnover-period">{item.period}</div>
-                      <div className="turnover-bar">
-                        <div 
-                          className={`turnover-fill ${item.status}`}
-                          style={{ width: `${(item.rate / 4) * 100}%` }}
-                        ></div>
-                        <span className="turnover-rate">{item.rate}</span>
-                      </div>
-                      <div className="turnover-target">目標: {item.target}</div>
+                <div className="bar-chart-container">
+                  <div className="chart-header">
+                    <div className="chart-title">在庫回転率推移</div>
+                    <div className="chart-target">目標: 3.0回転/月</div>
+                  </div>
+                  
+                  <div className="bar-chart">
+                    <div className="chart-y-axis">
+                      <div className="y-label">4.0</div>
+                      <div className="y-label">3.5</div>
+                      <div className="y-label">3.0</div>
+                      <div className="y-label">2.5</div>
+                      <div className="y-label">2.0</div>
+                      <div className="y-label">1.5</div>
                     </div>
-                  ))}
+                    
+                    <div className="chart-content">
+                      <div className="chart-grid">
+                        <div className="grid-line"></div>
+                        <div className="grid-line"></div>
+                        <div className="grid-line target-line"></div>
+                        <div className="grid-line"></div>
+                        <div className="grid-line"></div>
+                        <div className="grid-line"></div>
+                      </div>
+                      
+                      <div className="chart-bars">
+                        {mockReportData.turnoverRate.map((item, index) => (
+                          <div key={index} className="bar-group">
+                            <div className="bar-container">
+                              <div 
+                                className={`chart-bar ${item.status}`}
+                                style={{ height: `${(item.rate / 4) * 100}%` }}
+                                title={`${item.period}: ${item.rate}回転`}
+                              >
+                                <span className="bar-value">{item.rate}</span>
+                              </div>
+                            </div>
+                            <div className="bar-label">{item.period.replace('2024年', '').replace('月', '月')}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="chart-legend">
+                    <div className="legend-item">
+                      <div className="legend-color above"></div>
+                      <span>目標達成</span>
+                    </div>
+                    <div className="legend-item">
+                      <div className="legend-color below"></div>
+                      <span>要改善</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -426,25 +519,89 @@ function App() {
                 <p className="report-description">
                   カテゴリ別の在庫レベルを分析し、最適在庫との比較を表示します
                 </p>
-                <div className="stock-level-analysis">
-                  {mockReportData.stockLevel.map((item, index) => (
-                    <div key={index} className="level-item">
-                      <div className="level-header">
-                        <h4>{item.category}</h4>
-                        <span className="level-percentage">{item.percentage}%</span>
-                      </div>
-                      <div className="level-bar">
+                <div className="radar-chart-container">
+                  <div className="radar-chart">
+                    <svg viewBox="0 0 300 300" className="radar-svg">
+                      {/* Background grid */}
+                      <defs>
+                        <pattern id="radarGrid" x="0" y="0" width="300" height="300">
+                          <circle cx="150" cy="150" r="120" fill="none" stroke="#e1e8ed" strokeWidth="1"/>
+                          <circle cx="150" cy="150" r="90" fill="none" stroke="#e1e8ed" strokeWidth="1"/>
+                          <circle cx="150" cy="150" r="60" fill="none" stroke="#e1e8ed" strokeWidth="1"/>
+                          <circle cx="150" cy="150" r="30" fill="none" stroke="#e1e8ed" strokeWidth="1"/>
+                          <line x1="150" y1="30" x2="150" y2="270" stroke="#e1e8ed" strokeWidth="1"/>
+                          <line x1="30" y1="150" x2="270" y2="150" stroke="#e1e8ed" strokeWidth="1"/>
+                          <line x1="63" y1="63" x2="237" y2="237" stroke="#e1e8ed" strokeWidth="1"/>
+                          <line x1="237" y1="63" x2="63" y2="237" stroke="#e1e8ed" strokeWidth="1"/>
+                        </pattern>
+                      </defs>
+                      
+                      <rect width="300" height="300" fill="url(#radarGrid)"/>
+                      
+                      {/* Data polygon */}
+                      <polygon
+                        points="150,42 232,81 232,219 150,258 68,219 68,81"
+                        fill="rgba(52, 152, 219, 0.2)"
+                        stroke="#3498db"
+                        strokeWidth="2"
+                      />
+                      
+                      {/* Data points */}
+                      {mockReportData.stockLevel.map((item, index) => {
+                        const angles = [0, 72, 144, 216, 288]; // 5 points, 72 degrees apart
+                        const angle = (angles[index] - 90) * (Math.PI / 180); // Convert to radians and adjust for top start
+                        const radius = (item.percentage / 100) * 120; // Scale to chart size
+                        const x = 150 + radius * Math.cos(angle);
+                        const y = 150 + radius * Math.sin(angle);
+                        
+                        return (
+                          <circle
+                            key={index}
+                            cx={x}
+                            cy={y}
+                            r="6"
+                            fill={item.percentage < 80 ? '#e74c3c' : item.percentage > 95 ? '#f39c12' : '#27ae60'}
+                            stroke="white"
+                            strokeWidth="2"
+                            className="radar-point"
+                          />
+                        );
+                      })}
+                      
+                      {/* Labels */}
+                      <text x="150" y="25" textAnchor="middle" fontSize="12" fontWeight="600" fill="#2c3e50">原材料</text>
+                      <text x="260" y="90" textAnchor="middle" fontSize="12" fontWeight="600" fill="#2c3e50">部品</text>
+                      <text x="260" y="220" textAnchor="middle" fontSize="12" fontWeight="600" fill="#2c3e50">完成品</text>
+                      <text x="150" y="285" textAnchor="middle" fontSize="12" fontWeight="600" fill="#2c3e50">工具</text>
+                      <text x="40" y="220" textAnchor="middle" fontSize="12" fontWeight="600" fill="#2c3e50">消耗品</text>
+                      
+                      {/* Percentage labels */}
+                      <text x="155" y="55" fontSize="10" fill="#7f8c8d">100%</text>
+                      <text x="155" y="85" fontSize="10" fill="#7f8c8d">75%</text>
+                      <text x="155" y="115" fontSize="10" fill="#7f8c8d">50%</text>
+                      <text x="155" y="145" fontSize="10" fill="#7f8c8d">25%</text>
+                    </svg>
+                  </div>
+                  
+                  <div className="radar-legend">
+                    {mockReportData.stockLevel.map((item, index) => (
+                      <div key={index} className="radar-legend-item">
                         <div 
-                          className={`level-fill ${item.percentage < 80 ? 'low' : item.percentage > 95 ? 'high' : 'normal'}`}
-                          style={{ width: `${item.percentage}%` }}
+                          className="radar-legend-color"
+                          style={{ 
+                            backgroundColor: item.percentage < 80 ? '#e74c3c' : item.percentage > 95 ? '#f39c12' : '#27ae60'
+                          }}
                         ></div>
+                        <div className="radar-legend-content">
+                          <div className="radar-legend-label">{item.category}</div>
+                          <div className="radar-legend-value">{item.percentage}%</div>
+                          <div className="radar-legend-details">
+                            {item.current}/{item.optimal}
+                          </div>
+                        </div>
                       </div>
-                      <div className="level-details">
-                        <span>現在: {item.current}</span>
-                        <span>最適: {item.optimal}</span>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
