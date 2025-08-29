@@ -11,6 +11,40 @@ const mockInventoryData = [
   { id: 'INV006', name: '切削油 20L', category: '消耗品', stock: 18, minStock: 12, price: 3200, location: '化学品倉庫-D-01', status: 'normal' }
 ];
 
+const mockTransactionData = [
+  { id: 'TXN001', itemId: 'INV001', itemName: 'スチール板材 5mm', type: '入庫', quantity: 20, unitPrice: 15000, total: 300000, date: '2025-01-15', time: '10:30', operator: '田中太郎', reference: 'PO-2025-001', reason: '定期発注' },
+  { id: 'TXN002', itemId: 'INV002', itemName: 'ボルト M8x50', type: '出庫', quantity: -15, unitPrice: 80, total: -1200, date: '2025-01-14', time: '16:45', operator: '佐藤花子', reference: 'WO-2025-005', reason: '製品A100製造' },
+  { id: 'TXN003', itemId: 'INV003', itemName: 'アルミニウム角材', type: '調整', quantity: -3, unitPrice: 2500, total: -7500, date: '2025-01-13', time: '11:20', operator: '山田次郎', reference: 'ADJ-2025-001', reason: '棚卸調整' },
+  { id: 'TXN004', itemId: 'INV005', itemName: '完成品 モーターケース', type: '入庫', quantity: 10, unitPrice: 8500, total: 85000, date: '2025-01-12', time: '14:00', operator: '鈴木一郎', reference: 'WO-2025-003', reason: '製造完成' },
+  { id: 'TXN005', itemId: 'INV004', itemName: '電動ドリル替刃', type: '出庫', quantity: -5, unitPrice: 1200, total: -6000, date: '2025-01-11', time: '09:15', operator: '伊藤美咲', reference: 'SO-2025-012', reason: '顧客出荷' },
+  { id: 'TXN006', itemId: 'INV006', itemName: '切削油 20L', type: '入庫', quantity: 8, unitPrice: 3200, total: 25600, date: '2025-01-10', time: '15:30', operator: '高橋健太', reference: 'PO-2025-002', reason: '補充発注' },
+  { id: 'TXN007', itemId: 'INV001', itemName: 'スチール板材 5mm', type: '出庫', quantity: -12, unitPrice: 15000, total: -180000, date: '2025-01-09', time: '08:45', operator: '渡辺真由', reference: 'WO-2025-001', reason: '大型製品製造' },
+  { id: 'TXN008', itemId: 'INV002', itemName: 'ボルト M8x50', type: '入庫', quantity: 100, unitPrice: 80, total: 8000, date: '2025-01-08', time: '13:15', operator: '中村雅子', reference: 'PO-2025-003', reason: '月次補充' },
+];
+
+const mockReportData = {
+  abcAnalysis: [
+    { category: 'A', items: 23, percentage: 15.6, value: 1715000, description: '高価値・高回転' },
+    { category: 'B', items: 47, percentage: 32.0, value: 588000, description: '中価値・中回転' },
+    { category: 'C', items: 77, percentage: 52.4, value: 147000, description: '低価値・低回転' }
+  ],
+  turnoverRate: [
+    { period: '2024年12月', rate: 2.8, target: 3.0, status: 'below' },
+    { period: '2024年11月', rate: 3.2, target: 3.0, status: 'above' },
+    { period: '2024年10月', rate: 2.9, target: 3.0, status: 'below' },
+    { period: '2024年09月', rate: 3.4, target: 3.0, status: 'above' },
+    { period: '2024年08月', rate: 3.1, target: 3.0, status: 'above' },
+    { period: '2024年07月', rate: 2.7, target: 3.0, status: 'below' }
+  ],
+  stockLevel: [
+    { category: '原材料', current: 68, optimal: 75, percentage: 90.7 },
+    { category: '部品', current: 42, optimal: 50, percentage: 84.0 },
+    { category: '完成品', current: 23, optimal: 30, percentage: 76.7 },
+    { category: '工具', current: 8, optimal: 10, percentage: 80.0 },
+    { category: '消耗品', current: 6, optimal: 8, percentage: 75.0 }
+  ]
+};
+
 const mockStats = {
   totalItems: 147,
   totalValue: 2450000,
@@ -24,6 +58,8 @@ type ActiveTab = 'dashboard' | 'inventory' | 'transactions' | 'reports';
 function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
+  const [transactionFilter, setTransactionFilter] = useState('all');
+  const [reportType, setReportType] = useState('abc');
 
   const getStockStatusClass = (status: string) => {
     switch (status) {
@@ -47,6 +83,20 @@ function App() {
     item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const filteredTransactions = mockTransactionData.filter(transaction => {
+    if (transactionFilter === 'all') return true;
+    return transaction.type === transactionFilter;
+  });
+
+  const getTransactionTypeClass = (type: string) => {
+    switch (type) {
+      case '入庫': return 'tx-in';
+      case '出庫': return 'tx-out';
+      case '調整': return 'tx-adjust';
+      default: return 'tx-other';
+    }
+  };
 
   return (
     <div className="App">
@@ -227,11 +277,177 @@ function App() {
           </div>
         )}
 
-        {(activeTab === 'transactions' || activeTab === 'reports') && (
-          <div className="coming-soon">
-            <div className="coming-soon-icon">🚧</div>
-            <h2>{activeTab === 'transactions' ? '取引履歴' : 'レポート機能'}</h2>
-            <p>この機能は現在開発中です。近日公開予定です。</p>
+        {activeTab === 'transactions' && (
+          <div className="transactions">
+            <div className="transactions-header">
+              <h2>取引履歴</h2>
+              <div className="transaction-controls">
+                <select
+                  value={transactionFilter}
+                  onChange={(e) => setTransactionFilter(e.target.value)}
+                  className="filter-select"
+                >
+                  <option value="all">全ての取引</option>
+                  <option value="入庫">入庫</option>
+                  <option value="出庫">出庫</option>
+                  <option value="調整">調整</option>
+                </select>
+                <button className="export-btn">📊 エクスポート</button>
+              </div>
+            </div>
+
+            <div className="transactions-summary">
+              <div className="summary-card">
+                <span className="summary-label">今月の取引数</span>
+                <span className="summary-value">{filteredTransactions.length}</span>
+              </div>
+              <div className="summary-card">
+                <span className="summary-label">入庫取引</span>
+                <span className="summary-value">{mockTransactionData.filter(t => t.type === '入庫').length}</span>
+              </div>
+              <div className="summary-card">
+                <span className="summary-label">出庫取引</span>
+                <span className="summary-value">{mockTransactionData.filter(t => t.type === '出庫').length}</span>
+              </div>
+            </div>
+
+            <div className="transactions-table">
+              <div className="table-header">
+                <div className="col-date">日時</div>
+                <div className="col-type">種別</div>
+                <div className="col-item">アイテム</div>
+                <div className="col-quantity">数量</div>
+                <div className="col-total">金額</div>
+                <div className="col-operator">担当者</div>
+                <div className="col-reason">理由</div>
+              </div>
+              {filteredTransactions.map((transaction) => (
+                <div key={transaction.id} className="table-row">
+                  <div className="col-date">
+                    <div className="date">{transaction.date}</div>
+                    <div className="time">{transaction.time}</div>
+                  </div>
+                  <div className="col-type">
+                    <span className={`type-badge ${getTransactionTypeClass(transaction.type)}`}>
+                      {transaction.type}
+                    </span>
+                  </div>
+                  <div className="col-item">
+                    <div className="item-name">{transaction.itemName}</div>
+                    <div className="item-id">{transaction.itemId}</div>
+                  </div>
+                  <div className="col-quantity">
+                    <span className={transaction.quantity > 0 ? 'qty-positive' : 'qty-negative'}>
+                      {transaction.quantity > 0 ? '+' : ''}{transaction.quantity}
+                    </span>
+                  </div>
+                  <div className="col-total">
+                    <span className={transaction.total > 0 ? 'amount-positive' : 'amount-negative'}>
+                      ¥{Math.abs(transaction.total).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="col-operator">{transaction.operator}</div>
+                  <div className="col-reason">{transaction.reason}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'reports' && (
+          <div className="reports">
+            <div className="reports-header">
+              <h2>分析レポート</h2>
+              <div className="report-controls">
+                <select
+                  value={reportType}
+                  onChange={(e) => setReportType(e.target.value)}
+                  className="filter-select"
+                >
+                  <option value="abc">ABC分析</option>
+                  <option value="turnover">在庫回転率</option>
+                  <option value="level">在庫レベル分析</option>
+                </select>
+                <button className="generate-btn">📈 レポート生成</button>
+              </div>
+            </div>
+
+            {reportType === 'abc' && (
+              <div className="report-section">
+                <h3>📊 ABC分析</h3>
+                <p className="report-description">
+                  在庫アイテムを価値と回転率で分類し、効率的な在庫管理を支援します
+                </p>
+                <div className="abc-analysis">
+                  {mockReportData.abcAnalysis.map((item) => (
+                    <div key={item.category} className={`abc-card abc-${item.category.toLowerCase()}`}>
+                      <div className="abc-header">
+                        <h4>クラス {item.category}</h4>
+                        <span className="abc-percentage">{item.percentage}%</span>
+                      </div>
+                      <div className="abc-content">
+                        <div className="abc-items">{item.items} アイテム</div>
+                        <div className="abc-value">¥{item.value.toLocaleString()}</div>
+                        <div className="abc-description">{item.description}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {reportType === 'turnover' && (
+              <div className="report-section">
+                <h3>🔄 在庫回転率分析</h3>
+                <p className="report-description">
+                  月別の在庫回転率を表示し、在庫効率の改善点を特定します
+                </p>
+                <div className="turnover-chart">
+                  {mockReportData.turnoverRate.map((item, index) => (
+                    <div key={index} className="turnover-item">
+                      <div className="turnover-period">{item.period}</div>
+                      <div className="turnover-bar">
+                        <div 
+                          className={`turnover-fill ${item.status}`}
+                          style={{ width: `${(item.rate / 4) * 100}%` }}
+                        ></div>
+                        <span className="turnover-rate">{item.rate}</span>
+                      </div>
+                      <div className="turnover-target">目標: {item.target}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {reportType === 'level' && (
+              <div className="report-section">
+                <h3>📈 在庫レベル分析</h3>
+                <p className="report-description">
+                  カテゴリ別の在庫レベルを分析し、最適在庫との比較を表示します
+                </p>
+                <div className="stock-level-analysis">
+                  {mockReportData.stockLevel.map((item, index) => (
+                    <div key={index} className="level-item">
+                      <div className="level-header">
+                        <h4>{item.category}</h4>
+                        <span className="level-percentage">{item.percentage}%</span>
+                      </div>
+                      <div className="level-bar">
+                        <div 
+                          className={`level-fill ${item.percentage < 80 ? 'low' : item.percentage > 95 ? 'high' : 'normal'}`}
+                          style={{ width: `${item.percentage}%` }}
+                        ></div>
+                      </div>
+                      <div className="level-details">
+                        <span>現在: {item.current}</span>
+                        <span>最適: {item.optimal}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </main>
