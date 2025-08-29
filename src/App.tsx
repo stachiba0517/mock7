@@ -541,7 +541,7 @@ function App() {
                             <div className="bar-container">
                               <div 
                                 className={`chart-bar ${item.status}`}
-                                style={{ height: `${(item.rate / 4) * 100}%` }}
+                                style={{ height: `${(item.rate / 4) * 250}px` }}
                                 title={`${item.period}: ${item.rate}回転`}
                               >
                                 <span className="bar-value">{item.rate}</span>
@@ -579,50 +579,32 @@ function App() {
                     <svg viewBox="0 0 400 400" className="radar-svg">
                       {/* Background gradient */}
                       <defs>
-                        <radialGradient id="radarBackground" cx="50%" cy="50%" r="50%">
-                          <stop offset="0%" stopColor="rgba(52, 152, 219, 0.05)" />
-                          <stop offset="100%" stopColor="rgba(52, 152, 219, 0.15)" />
-                        </radialGradient>
-                        
-                        <filter id="radarShadow">
-                          <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="rgba(0,0,0,0.1)"/>
-                        </filter>
-                        
                         <linearGradient id="dataPolygonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="rgba(52, 152, 219, 0.4)" />
+                          <stop offset="0%" stopColor="rgba(52, 152, 219, 0.3)" />
                           <stop offset="100%" stopColor="rgba(52, 152, 219, 0.1)" />
                         </linearGradient>
                       </defs>
                       
-                      {/* Background circle */}
-                      <circle cx="200" cy="200" r="160" fill="url(#radarBackground)" filter="url(#radarShadow)"/>
+                      {/* Concentric circles with percentage labels */}
+                      <circle cx="200" cy="200" r="160" fill="none" stroke="#e1e8ed" strokeWidth="2"/>
+                      <circle cx="200" cy="200" r="128" fill="none" stroke="#e1e8ed" strokeWidth="1"/>
+                      <circle cx="200" cy="200" r="96" fill="none" stroke="#e1e8ed" strokeWidth="1"/>
+                      <circle cx="200" cy="200" r="64" fill="none" stroke="#e1e8ed" strokeWidth="1"/>
+                      <circle cx="200" cy="200" r="32" fill="none" stroke="#e1e8ed" strokeWidth="1"/>
                       
-                      {/* Concentric circles */}
-                      <circle cx="200" cy="200" r="160" fill="none" stroke="#3498db" strokeWidth="2" opacity="0.3"/>
-                      <circle cx="200" cy="200" r="128" fill="none" stroke="#3498db" strokeWidth="1.5" opacity="0.4"/>
-                      <circle cx="200" cy="200" r="96" fill="none" stroke="#3498db" strokeWidth="1.5" opacity="0.5"/>
-                      <circle cx="200" cy="200" r="64" fill="none" stroke="#3498db" strokeWidth="1.5" opacity="0.6"/>
-                      <circle cx="200" cy="200" r="32" fill="none" stroke="#3498db" strokeWidth="1.5" opacity="0.7"/>
-                      
-                      {/* Radial lines */}
-                      <line x1="200" y1="40" x2="200" y2="360" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
-                      <line x1="40" y1="200" x2="360" y2="200" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
-                      <line x1="87" y1="87" x2="313" y2="313" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
-                      <line x1="313" y1="87" x2="87" y2="313" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
-                      <line x1="138" y1="62" x2="262" y2="338" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
-                      <line x1="262" y1="62" x2="138" y2="338" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
-                      <line x1="338" y1="138" x2="62" y2="262" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
-                      <line x1="62" y1="138" x2="338" y2="262" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
-                      <line x1="354" y1="169" x2="46" y2="231" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
-                      <line x1="46" y1="169" x2="354" y2="231" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
+                      {/* Radial lines for 5 categories */}
+                      <line x1="200" y1="40" x2="200" y2="360" stroke="#e1e8ed" strokeWidth="1"/>
+                      <line x1="200" y1="200" x2="351" y2="113" stroke="#e1e8ed" strokeWidth="1"/>
+                      <line x1="200" y1="200" x2="351" y2="287" stroke="#e1e8ed" strokeWidth="1"/>
+                      <line x1="200" y1="200" x2="49" y2="287" stroke="#e1e8ed" strokeWidth="1"/>
+                      <line x1="200" y1="200" x2="49" y2="113" stroke="#e1e8ed" strokeWidth="1"/>
                       
                       {/* Data polygon */}
                       <polygon
-                        points="200,55 306,108 306,292 200,345 94,292 94,108"
+                        points="200,55 306,108 306,292 94,292 94,108"
                         fill="url(#dataPolygonGradient)"
                         stroke="#3498db"
                         strokeWidth="3"
-                        filter="url(#radarShadow)"
                       />
                       
                       {/* Data points */}
@@ -638,47 +620,28 @@ function App() {
                             key={index}
                             cx={x}
                             cy={y}
-                            r="8"
+                            r="6"
                             fill={item.percentage < 80 ? '#e74c3c' : item.percentage > 95 ? '#f39c12' : '#27ae60'}
                             stroke="white"
-                            strokeWidth="3"
+                            strokeWidth="2"
                             className="radar-point"
-                            filter="url(#radarShadow)"
                           />
                         );
                       })}
                       
-                      {/* Labels with background */}
-                      <circle cx="200" cy="25" r="15" fill="white" opacity="0.9"/>
-                      <text x="200" y="30" textAnchor="middle" fontSize="12" fontWeight="700" fill="#2c3e50">原材料</text>
+                      {/* Labels */}
+                      <text x="200" y="30" textAnchor="middle" fontSize="12" fontWeight="600" fill="#2c3e50">原材料</text>
+                      <text x="351" y="118" textAnchor="start" fontSize="12" fontWeight="600" fill="#2c3e50">部品</text>
+                      <text x="351" y="297" textAnchor="start" fontSize="12" fontWeight="600" fill="#2c3e50">完成品</text>
+                      <text x="49" y="297" textAnchor="end" fontSize="12" fontWeight="600" fill="#2c3e50">消耗品</text>
+                      <text x="49" y="118" textAnchor="end" fontSize="12" fontWeight="600" fill="#2c3e50">工具</text>
                       
-                      <circle cx="340" cy="108" r="20" fill="white" opacity="0.9"/>
-                      <text x="340" y="113" textAnchor="middle" fontSize="12" fontWeight="700" fill="#2c3e50">部品</text>
-                      
-                      <circle cx="340" cy="292" r="25" fill="white" opacity="0.9"/>
-                      <text x="340" y="297" textAnchor="middle" fontSize="12" fontWeight="700" fill="#2c3e50">完成品</text>
-                      
-                      <circle cx="200" cy="375" r="15" fill="white" opacity="0.9"/>
-                      <text x="200" y="380" textAnchor="middle" fontSize="12" fontWeight="700" fill="#2c3e50">工具</text>
-                      
-                      <circle cx="60" cy="292" r="20" fill="white" opacity="0.9"/>
-                      <text x="60" y="297" textAnchor="middle" fontSize="12" fontWeight="700" fill="#2c3e50">消耗品</text>
-                      
-                      {/* Percentage labels with background */}
-                      <rect x="205" y="50" width="30" height="16" fill="white" opacity="0.8" rx="3"/>
-                      <text x="220" y="61" textAnchor="middle" fontSize="11" fontWeight="600" fill="#7f8c8d">100%</text>
-                      
-                      <rect x="205" y="82" width="25" height="16" fill="white" opacity="0.8" rx="3"/>
-                      <text x="217" y="93" textAnchor="middle" fontSize="11" fontWeight="600" fill="#7f8c8d">80%</text>
-                      
-                      <rect x="205" y="114" width="25" height="16" fill="white" opacity="0.8" rx="3"/>
-                      <text x="217" y="125" textAnchor="middle" fontSize="11" fontWeight="600" fill="#7f8c8d">60%</text>
-                      
-                      <rect x="205" y="146" width="25" height="16" fill="white" opacity="0.8" rx="3"/>
-                      <text x="217" y="157" textAnchor="middle" fontSize="11" fontWeight="600" fill="#7f8c8d">40%</text>
-                      
-                      <rect x="205" y="178" width="25" height="16" fill="white" opacity="0.8" rx="3"/>
-                      <text x="217" y="189" textAnchor="middle" fontSize="11" fontWeight="600" fill="#7f8c8d">20%</text>
+                      {/* Percentage labels */}
+                      <text x="210" y="45" fontSize="10" fill="#7f8c8d">100%</text>
+                      <text x="210" y="77" fontSize="10" fill="#7f8c8d">80%</text>
+                      <text x="210" y="109" fontSize="10" fill="#7f8c8d">60%</text>
+                      <text x="210" y="141" fontSize="10" fill="#7f8c8d">40%</text>
+                      <text x="210" y="173" fontSize="10" fill="#7f8c8d">20%</text>
                     </svg>
                   </div>
                   
