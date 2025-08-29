@@ -1,0 +1,525 @@
+/* セキュアなモックAPIアプリケーションのスタイル */
+
+:root {
+  --primary-color: #007bff;
+  --success-color: #28a745;
+  --danger-color: #dc3545;
+  --warning-color: #ffc107;
+  --info-color: #17a2b8;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --border-color: #dee2e6;
+  --border-radius: 8px;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--light-color);
+  color: var(--dark-color);
+  line-height: 1.6;
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ヘッダー */
+.App-header {
+  background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+  color: white;
+  padding: 2rem 1rem;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.App-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.App-header p {
+  margin: 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* ナビゲーション */
+.App-nav {
+  background: white;
+  padding: 0;
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.App-nav button {
+  background: transparent;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  border-bottom: 3px solid transparent;
+}
+
+.App-nav button:hover {
+  background-color: var(--light-color);
+}
+
+.App-nav button.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-bottom-color: var(--dark-color);
+}
+
+/* メインコンテンツ */
+.App-main {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  width: 100%;
+}
+
+/* 共通ボタンスタイル */
+button {
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.refresh-button {
+  background-color: var(--info-color);
+  color: white;
+}
+
+.refresh-button:hover:not(:disabled) {
+  background-color: #138496;
+}
+
+.delete-button {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.delete-button:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.submit-button {
+  background-color: var(--success-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.reset-button {
+  background-color: var(--warning-color);
+  color: var(--dark-color);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.reset-button:hover:not(:disabled) {
+  background-color: #e0a800;
+}
+
+.action-button {
+  padding: 0.5rem 1rem;
+}
+
+.action-button.primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.action-button.primary:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.action-button.disabled {
+  background-color: var(--border-color);
+  color: #6c757d;
+}
+
+/* セクションヘッダー */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.section-header h2 {
+  margin: 0;
+  color: var(--dark-color);
+  font-size: 1.8rem;
+}
+
+/* メッセージ */
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  border: 1px solid #f5c6cb;
+  margin-bottom: 1rem;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 2rem;
+  color: var(--info-color);
+  font-size: 1.1rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6c757d;
+}
+
+/* グリッドレイアウト */
+.user-grid,
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* カード共通スタイル */
+.user-card,
+.product-card {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  transition: var(--transition);
+  border: 1px solid var(--border-color);
+}
+
+.user-card:hover,
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ユーザーカード */
+.user-header,
+.product-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.user-name,
+.product-name {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--dark-color);
+  flex: 1;
+  min-width: 0;
+  word-wrap: break-word;
+}
+
+.user-role,
+.product-category {
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.role-admin {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.role-user {
+  background-color: var(--info-color);
+  color: white;
+}
+
+.role-default {
+  background-color: var(--border-color);
+  color: var(--dark-color);
+}
+
+.category-security {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.category-test {
+  background-color: var(--warning-color);
+  color: var(--dark-color);
+}
+
+.category-sample {
+  background-color: var(--info-color);
+  color: white;
+}
+
+.category-default {
+  background-color: var(--border-color);
+  color: var(--dark-color);
+}
+
+.user-details,
+.product-details {
+  margin-bottom: 1rem;
+}
+
+.user-details > div,
+.product-details > div {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-email span,
+.product-description span {
+  word-wrap: break-word;
+  flex: 1;
+}
+
+.user-id code,
+.product-id code {
+  background-color: var(--light-color);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: 'Courier New', monospace;
+}
+
+.stock-in {
+  color: var(--success-color);
+  font-weight: bold;
+}
+
+.stock-out {
+  color: var(--danger-color);
+  font-weight: bold;
+}
+
+.user-actions,
+.product-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+/* 統計 */
+.user-stats,
+.product-stats {
+  text-align: center;
+  padding: 1rem;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  color: var(--dark-color);
+}
+
+/* フォームスタイル */
+.user-form-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.user-form {
+  background: white;
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+.required {
+  color: var(--danger-color);
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-input.error,
+.form-select.error {
+  border-color: var(--danger-color);
+}
+
+.error-text {
+  color: var(--danger-color);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.form-info {
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.form-info h3 {
+  margin-top: 0;
+  color: var(--info-color);
+}
+
+.form-info ul {
+  margin-bottom: 0;
+  padding-left: 1.5rem;
+}
+
+.form-info li {
+  margin-bottom: 0.5rem;
+  color: #6c757d;
+}
+
+/* フッター */
+.App-footer {
+  background-color: var(--dark-color);
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-top: auto;
+}
+
+.App-footer p {
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  .App-header {
+    padding: 1.5rem 1rem;
+  }
+  
+  .App-header h1 {
+    font-size: 2rem;
+  }
+  
+  .App-nav {
+    justify-content: stretch;
+  }
+  
+  .App-nav button {
+    flex: 1;
+    padding: 0.75rem 1rem;
+  }
+  
+  .App-main {
+    padding: 1rem;
+  }
+  
+  .user-grid,
+  .product-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-card,
+  .product-card {
+    padding: 1rem;
+  }
+  
+  .user-header,
+  .product-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .user-actions,
+  .product-actions {
+    justify-content: stretch;
+  }
+  
+  .user-actions button,
+  .product-actions button {
+    flex: 1;
+  }
+}

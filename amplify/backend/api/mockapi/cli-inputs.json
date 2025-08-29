@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "paths": {
+    "/users": {
+      "name": "/users",
+      "lambdaFunction": "mockApiFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/users/{id}": {
+      "name": "/users/{id}",
+      "lambdaFunction": "mockApiFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/products": {
+      "name": "/products",
+      "lambdaFunction": "mockApiFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

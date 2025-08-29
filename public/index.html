@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="AWS Amplifyを使用したセキュアなモックAPIアプリケーション"
+    />
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' https://cognito-identity.*.amazonaws.com https://cognito-idp.*.amazonaws.com;
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data: https:;
+      connect-src 'self' https://*.amazonaws.com https://*.amplifyapp.com wss://*.amplifyapp.com;
+      font-src 'self';
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self';
+    " />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>Secure Mock API - AWS Amplify</title>
+  </head>
+  <body>
+    <noscript>このアプリケーションを実行するにはJavaScriptを有効にしてください。</noscript>
+    <div id="root"></div>
+  </body>
+</html>

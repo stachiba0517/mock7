@@ -1,0 +1,10 @@
+{
+  "name": "mockApiFunction",
+  "version": "2.0.0",
+  "description": "Secure Mock API Lambda function for AWS Amplify",
+  "main": "index.js",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "uuid": "^9.0.1"
+  }
+}

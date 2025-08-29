@@ -1,0 +1,22 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-securemockapi-dev-xxxxx-authRole",
+      "UnauthRoleName": "amplify-securemockapi-dev-xxxxx-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::123456789012:role/amplify-securemockapi-dev-xxxxx-authRole",
+      "UnauthRoleArn": "arn:aws:iam::123456789012:role/amplify-securemockapi-dev-xxxxx-unauthRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-securemockapi-dev-xxxxx-deployment",
+      "StackName": "amplify-securemockapi-dev-xxxxx",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:123456789012:stack/amplify-securemockapi-dev-xxxxx/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+      "AmplifyAppId": "dxxxxxxxxxxxxx"
+    },
+    "categories": {
+      "function": {
+        "mockApiFunction": {
+          "deploymentBucketName": "amplify-securemockapi-dev-xxxxx-deployment"
+        }
+      }
+    }
+  }
+}
