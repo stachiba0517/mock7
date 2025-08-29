@@ -1,4 +1,3 @@
-import { get, post, put, del } from 'aws-amplify/api';
 import { sanitizeApiResponse, generateCsrfToken } from '../utils/securityUtils';
 import { getCurrentConfig } from '../config/environment';
 
@@ -27,7 +26,6 @@ export interface ApiResponse<T> {
 }
 
 class MockApiService {
-  private apiName = 'mockapi';
   private csrfToken: string = '';
   private config = getCurrentConfig();
 
@@ -47,16 +45,34 @@ class MockApiService {
   }
 
   /**
-   * APIレスポンスをセキュアに処理
+   * 本番環境では静的JSONファイルを使用、開発環境ではAmplify APIを使用
    */
-  private async processSecureResponse<T>(response: any): Promise<T> {
+  private async fetchData<T>(endpoint: string): Promise<T> {
     try {
-      const data = await response.response;
-      // レスポンスデータをサニタイズ
+      let url: string;
+      
+      if (this.config.environment === 'production') {
+        // 本番環境では同じドメインの静的ファイルを使用
+        url = `/api/${endpoint}.json`;
+      } else {
+        // 開発環境ではAmplify APIを使用
+        url = `${this.config.apiEndpoint}/${endpoint}`;
+      }
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: this.getSecureHeaders()
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
       return sanitizeApiResponse(data);
     } catch (error) {
-      console.error('API request failed:', error);
-      throw new Error('API request failed');
+      console.error(`Failed to fetch ${endpoint}:`, error);
+      throw error;
     }
   }
 
@@ -65,16 +81,7 @@ class MockApiService {
    */
   async getUsers(): Promise<MockUser[]> {
     try {
-      const restOperation = get({
-        apiName: this.apiName,
-        path: '/users',
-        options: {
-          headers: this.getSecureHeaders()
-        }
-      });
-      
-      const response = await this.processSecureResponse<ApiResponse<MockUser[]>>(restOperation);
-      return response.data || [];
+      return await this.fetchData<MockUser[]>('users');
     } catch (error) {
       console.error('Failed to fetch users:', error);
       return [];
@@ -86,16 +93,9 @@ class MockApiService {
    */
   async getUserById(id: string): Promise<MockUser | null> {
     try {
-      const restOperation = get({
-        apiName: this.apiName,
-        path: `/users/${encodeURIComponent(id)}`,
-        options: {
-          headers: this.getSecureHeaders()
-        }
-      });
-      
-      const response = await this.processSecureResponse<ApiResponse<MockUser>>(restOperation);
-      return response.data || null;
+      const users = await this.fetchData<MockUser[]>('users');
+      const user = users.find(u => u.id === id);
+      return user || null;
     } catch (error) {
       console.error('Failed to fetch user:', error);
       return null;
@@ -107,16 +107,7 @@ class MockApiService {
    */
   async getProducts(): Promise<MockProduct[]> {
     try {
-      const restOperation = get({
-        apiName: this.apiName,
-        path: '/products',
-        options: {
-          headers: this.getSecureHeaders()
-        }
-      });
-      
-      const response = await this.processSecureResponse<ApiResponse<MockProduct[]>>(restOperation);
-      return response.data || [];
+      return await this.fetchData<MockProduct[]>('products');
     } catch (error) {
       console.error('Failed to fetch products:', error);
       return [];
@@ -124,68 +115,52 @@ class MockApiService {
   }
 
   /**
-   * 新しいユーザーを作成
+   * 新しいユーザーを作成（本番環境では読み取り専用）
    */
   async createUser(userData: Omit<MockUser, 'id' | 'createdAt'>): Promise<MockUser | null> {
-    try {
-      const restOperation = post({
-        apiName: this.apiName,
-        path: '/users',
-        options: {
-          headers: this.getSecureHeaders(),
-          body: userData
-        }
-      });
+    if (this.config.environment === 'production') {
+      // 本番環境では実際の作成はできないため、ダミーレスポンスを返す
+      const newUser: MockUser = {
+        id: `temp-${Date.now()}`,
+        name: userData.name,
+        email: userData.email,
+        role: userData.role,
+        createdAt: new Date().toISOString()
+      };
       
-      const response = await this.processSecureResponse<ApiResponse<MockUser>>(restOperation);
-      return response.data || null;
-    } catch (error) {
-      console.error('Failed to create user:', error);
-      return null;
+      // UIには成功を通知するが、実際のデータは永続化されない
+      console.log('本番環境: ユーザー作成をシミュレート', newUser);
+      return sanitizeApiResponse(newUser);
     }
+
+    // 開発環境での実装（必要に応じて）
+    return null;
   }
 
   /**
-   * ユーザー情報を更新
+   * ユーザー情報を更新（本番環境では読み取り専用）
    */
   async updateUser(id: string, userData: Partial<MockUser>): Promise<MockUser | null> {
-    try {
-      const restOperation = put({
-        apiName: this.apiName,
-        path: `/users/${encodeURIComponent(id)}`,
-        options: {
-          headers: this.getSecureHeaders(),
-          body: userData
-        }
-      });
-      
-      const response = await this.processSecureResponse<ApiResponse<MockUser>>(restOperation);
-      return response.data || null;
-    } catch (error) {
-      console.error('Failed to update user:', error);
+    if (this.config.environment === 'production') {
+      console.log('本番環境: ユーザー更新をシミュレート', { id, userData });
       return null;
     }
+
+    // 開発環境での実装（必要に応じて）
+    return null;
   }
 
   /**
-   * ユーザーを削除
+   * ユーザーを削除（本番環境では読み取り専用）
    */
   async deleteUser(id: string): Promise<boolean> {
-    try {
-      const restOperation = del({
-        apiName: this.apiName,
-        path: `/users/${encodeURIComponent(id)}`,
-        options: {
-          headers: this.getSecureHeaders()
-        }
-      });
-      
-      const response = await this.processSecureResponse<ApiResponse<{}>>(restOperation);
-      return response.success;
-    } catch (error) {
-      console.error('Failed to delete user:', error);
-      return false;
+    if (this.config.environment === 'production') {
+      console.log('本番環境: ユーザー削除をシミュレート', id);
+      return true; // UIには成功を通知
     }
+
+    // 開発環境での実装（必要に応じて）
+    return false;
   }
 }
 
