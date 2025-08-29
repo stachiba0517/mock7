@@ -665,48 +665,91 @@ body {
   line-height: 1.5;
 }
 
-/* ドーナツチャート (ABC分析) */
-.abc-chart-container {
+/* パレート図 (ABC分析) */
+.pareto-chart-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
   gap: 3rem;
-  align-items: center;
+  align-items: flex-start;
 }
 
-.donut-chart {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.pareto-chart {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  box-shadow: var(--shadow);
 }
 
-.donut-svg {
-  width: 300px;
-  height: 300px;
-  max-width: 100%;
+.pareto-svg {
+  width: 100%;
+  height: auto;
+  max-width: 600px;
 }
 
-.donut-segment {
+.pareto-bar {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.pareto-bar:hover {
+  filter: brightness(1.1);
+  transform: scaleY(1.02);
+  transform-origin: bottom;
+}
+
+.cumulative-line {
   transition: stroke-width 0.3s ease;
   cursor: pointer;
 }
 
-.donut-segment:hover {
-  stroke-width: 45;
+.cumulative-line:hover {
+  stroke-width: 4;
 }
 
-.donut-center-text {
-  fill: var(--primary-color);
-  text-anchor: middle;
-  dominant-baseline: middle;
+.data-point {
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
-.abc-legend {
+.data-point:hover {
+  r: 8;
+  filter: brightness(1.2);
+}
+
+.pareto-legend {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
-.legend-item {
+.pareto-summary {
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  border-left: 4px solid #e74c3c;
+}
+
+.pareto-summary h4 {
+  margin: 0 0 1rem 0;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+
+.pareto-summary p {
+  margin: 0;
+  color: #7f8c8d;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.pareto-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pareto-item {
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -716,76 +759,71 @@ body {
   cursor: pointer;
 }
 
-.legend-item:hover {
+.pareto-item:hover {
   transform: translateX(5px);
   box-shadow: var(--shadow);
 }
 
-.legend-item.abc-a {
+.pareto-item.abc-a {
   background: linear-gradient(135deg, #fff5f5, #fed7d7);
 }
 
-.legend-item.abc-b {
+.pareto-item.abc-b {
   background: linear-gradient(135deg, #fffbf0, #feebc8);
 }
 
-.legend-item.abc-c {
+.pareto-item.abc-c {
   background: linear-gradient(135deg, #f0fff4, #c6f6d5);
 }
 
-.legend-color {
+.pareto-color {
   width: 20px;
   height: 20px;
-  border-radius: 50%;
+  border-radius: 4px;
   flex-shrink: 0;
 }
 
-.legend-item.abc-a .legend-color {
-  background: #e53e3e;
+.pareto-item.abc-a .pareto-color {
+  background: linear-gradient(135deg, #e53e3e, #c53030);
 }
 
-.legend-item.abc-b .legend-color {
-  background: #dd6b20;
+.pareto-item.abc-b .pareto-color {
+  background: linear-gradient(135deg, #dd6b20, #c05621);
 }
 
-.legend-item.abc-c .legend-color {
-  background: #38a169;
+.pareto-item.abc-c .pareto-color {
+  background: linear-gradient(135deg, #38a169, #2f855a);
 }
 
-.legend-content {
+.pareto-content {
   flex: 1;
 }
 
-.legend-header {
+.pareto-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
 }
 
-.legend-label {
-  font-weight: 600;
+.pareto-label {
+  font-weight: 700;
   color: var(--primary-color);
   font-size: 1.1rem;
 }
 
-.legend-percentage {
+.pareto-cumulative {
   font-weight: 700;
-  color: var(--primary-color);
+  color: #3498db;
   font-size: 1.2rem;
 }
 
-.legend-details {
+.pareto-stats {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
   font-size: 0.9rem;
   color: #7f8c8d;
-}
-
-.legend-description {
-  font-weight: 600;
-  color: var(--primary-color);
 }
 
 /* 棒グラフ (在庫回転率) */
@@ -979,21 +1017,25 @@ body {
 /* レーダーチャート (在庫レベル分析) */
 .radar-chart-container {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 2fr 1fr;
   gap: 3rem;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .radar-chart {
   display: flex;
   justify-content: center;
   align-items: center;
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  box-shadow: var(--shadow);
 }
 
 .radar-svg {
-  width: 400px;
-  height: 400px;
-  max-width: 100%;
+  width: 100%;
+  height: auto;
+  max-width: 500px;
 }
 
 .radar-point {
@@ -1002,8 +1044,9 @@ body {
 }
 
 .radar-point:hover {
-  r: 8;
+  r: 12;
   filter: brightness(1.2);
+  stroke-width: 4;
 }
 
 .radar-legend {
@@ -1022,18 +1065,22 @@ body {
   box-shadow: var(--shadow);
   transition: var(--transition);
   cursor: pointer;
+  border: 2px solid transparent;
 }
 
 .radar-legend-item:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
+  border-color: #3498db;
 }
 
 .radar-legend-color {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   flex-shrink: 0;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .radar-legend-content {
@@ -1041,22 +1088,26 @@ body {
 }
 
 .radar-legend-label {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--primary-color);
-  font-size: 1rem;
+  font-size: 1.1rem;
   margin-bottom: 0.25rem;
 }
 
 .radar-legend-value {
   font-weight: 700;
-  color: var(--primary-color);
-  font-size: 1.2rem;
+  color: #3498db;
+  font-size: 1.3rem;
   margin-bottom: 0.25rem;
 }
 
 .radar-legend-details {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: #7f8c8d;
+  background: #f8f9fa;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  display: inline-block;
 }
 
 /* フッター */
@@ -1180,7 +1231,7 @@ body {
     color: #7f8c8d;
   }
 
-  .abc-chart-container {
+  .pareto-chart-container {
     grid-template-columns: 1fr;
     gap: 2rem;
   }

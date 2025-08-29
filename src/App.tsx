@@ -374,75 +374,130 @@ function App() {
 
             {reportType === 'abc' && (
               <div className="report-section">
-                <h3>📊 ABC分析</h3>
+                <h3>📊 ABC分析 (パレート図)</h3>
                 <p className="report-description">
-                  在庫アイテムを価値と回転率で分類し、効率的な在庫管理を支援します
+                  在庫価値の80-20ルールを視覚化し、重要アイテムの特定を支援します
                 </p>
-                <div className="abc-chart-container">
-                  <div className="donut-chart">
-                    <svg viewBox="0 0 200 200" className="donut-svg">
-                      <circle cx="100" cy="100" r="80" fill="transparent" stroke="#e1e8ed" strokeWidth="40"/>
+                <div className="pareto-chart-container">
+                  <div className="pareto-chart">
+                    <svg viewBox="0 0 600 400" className="pareto-svg">
+                      {/* Background and grid */}
+                      <defs>
+                        <linearGradient id="classAGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#e53e3e" />
+                          <stop offset="100%" stopColor="#c53030" />
+                        </linearGradient>
+                        <linearGradient id="classBGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#dd6b20" />
+                          <stop offset="100%" stopColor="#c05621" />
+                        </linearGradient>
+                        <linearGradient id="classCGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#38a169" />
+                          <stop offset="100%" stopColor="#2f855a" />
+                        </linearGradient>
+                      </defs>
                       
-                      {/* Class A: 15.6% */}
-                      <circle 
-                        cx="100" cy="100" r="80" 
-                        fill="transparent" 
-                        stroke="#e53e3e" 
-                        strokeWidth="40"
-                        strokeDasharray={`${15.6 * 5.02} 502`}
-                        strokeDashoffset="0"
-                        className="donut-segment"
-                        transform="rotate(-90 100 100)"
+                      {/* Y-axis for values */}
+                      <line x1="80" y1="50" x2="80" y2="320" stroke="#2c3e50" strokeWidth="2"/>
+                      {/* X-axis */}
+                      <line x1="80" y1="320" x2="520" y2="320" stroke="#2c3e50" strokeWidth="2"/>
+                      {/* Y-axis for percentage (right) */}
+                      <line x1="520" y1="50" x2="520" y2="320" stroke="#3498db" strokeWidth="2"/>
+                      
+                      {/* Grid lines */}
+                      <line x1="80" y1="266" x2="520" y2="266" stroke="#e1e8ed" strokeWidth="1" strokeDasharray="3,3"/>
+                      <line x1="80" y1="212" x2="520" y2="212" stroke="#e1e8ed" strokeWidth="1" strokeDasharray="3,3"/>
+                      <line x1="80" y1="158" x2="520" y2="158" stroke="#e1e8ed" strokeWidth="1" strokeDasharray="3,3"/>
+                      <line x1="80" y1="104" x2="520" y2="104" stroke="#e1e8ed" strokeWidth="1" strokeDasharray="3,3"/>
+                      
+                      {/* 80% line */}
+                      <line x1="80" y1="104" x2="520" y2="104" stroke="#e74c3c" strokeWidth="2" strokeDasharray="5,5"/>
+                      <text x="530" y="108" fontSize="12" fill="#e74c3c" fontWeight="600">80%</text>
+                      
+                      {/* Bars */}
+                      {/* Class A */}
+                      <rect x="120" y="187" width="100" height="133" fill="url(#classAGradient)" className="pareto-bar"/>
+                      {/* Class B */}
+                      <rect x="250" y="236" width="100" height="84" fill="url(#classBGradient)" className="pareto-bar"/>
+                      {/* Class C */}
+                      <rect x="380" y="294" width="100" height="26" fill="url(#classCGradient)" className="pareto-bar"/>
+                      
+                      {/* Cumulative line */}
+                      <path 
+                        d="M 170 187 L 300 131 L 430 104" 
+                        fill="none" 
+                        stroke="#3498db" 
+                        strokeWidth="3"
+                        className="cumulative-line"
                       />
                       
-                      {/* Class B: 32.0% */}
-                      <circle 
-                        cx="100" cy="100" r="80" 
-                        fill="transparent" 
-                        stroke="#dd6b20" 
-                        strokeWidth="40"
-                        strokeDasharray={`${32.0 * 5.02} 502`}
-                        strokeDashoffset={`-${15.6 * 5.02}`}
-                        className="donut-segment"
-                        transform="rotate(-90 100 100)"
-                      />
+                      {/* Data points on cumulative line */}
+                      <circle cx="170" cy="187" r="6" fill="#3498db" stroke="white" strokeWidth="2" className="data-point"/>
+                      <circle cx="300" cy="131" r="6" fill="#3498db" stroke="white" strokeWidth="2" className="data-point"/>
+                      <circle cx="430" cy="104" r="6" fill="#3498db" stroke="white" strokeWidth="2" className="data-point"/>
                       
-                      {/* Class C: 52.4% */}
-                      <circle 
-                        cx="100" cy="100" r="80" 
-                        fill="transparent" 
-                        stroke="#38a169" 
-                        strokeWidth="40"
-                        strokeDasharray={`${52.4 * 5.02} 502`}
-                        strokeDashoffset={`-${(15.6 + 32.0) * 5.02}`}
-                        className="donut-segment"
-                        transform="rotate(-90 100 100)"
-                      />
+                      {/* Labels */}
+                      <text x="170" y="340" textAnchor="middle" fontSize="14" fontWeight="600" fill="#2c3e50">クラス A</text>
+                      <text x="300" y="340" textAnchor="middle" fontSize="14" fontWeight="600" fill="#2c3e50">クラス B</text>
+                      <text x="430" y="340" textAnchor="middle" fontSize="14" fontWeight="600" fill="#2c3e50">クラス C</text>
                       
-                      <text x="100" y="95" textAnchor="middle" className="donut-center-text">
-                        <tspan x="100" dy="0" fontSize="24" fontWeight="700">147</tspan>
-                        <tspan x="100" dy="20" fontSize="12" fill="#7f8c8d">アイテム</tspan>
-                      </text>
+                      {/* Y-axis labels (left - value) */}
+                      <text x="70" y="325" textAnchor="end" fontSize="12" fill="#2c3e50">0</text>
+                      <text x="70" y="266" textAnchor="end" fontSize="12" fill="#2c3e50">500K</text>
+                      <text x="70" y="212" textAnchor="end" fontSize="12" fill="#2c3e50">1M</text>
+                      <text x="70" y="158" textAnchor="end" fontSize="12" fill="#2c3e50">1.5M</text>
+                      <text x="70" y="104" textAnchor="end" fontSize="12" fill="#2c3e50">2M</text>
+                      
+                      {/* Y-axis labels (right - percentage) */}
+                      <text x="530" y="325" fontSize="12" fill="#3498db">0%</text>
+                      <text x="530" y="266" fontSize="12" fill="#3498db">20%</text>
+                      <text x="530" y="212" fontSize="12" fill="#3498db">40%</text>
+                      <text x="530" y="158" fontSize="12" fill="#3498db">60%</text>
+                      <text x="530" y="54" fontSize="12" fill="#3498db">100%</text>
+                      
+                      {/* Value labels on bars */}
+                      <text x="170" y="180" textAnchor="middle" fontSize="12" fontWeight="700" fill="white">¥1.7M</text>
+                      <text x="300" y="229" textAnchor="middle" fontSize="12" fontWeight="700" fill="white">¥588K</text>
+                      <text x="430" y="287" textAnchor="middle" fontSize="12" fontWeight="700" fill="white">¥147K</text>
+                      
+                      {/* Percentage labels on line */}
+                      <text x="175" y="182" fontSize="11" fontWeight="600" fill="#3498db">70.1%</text>
+                      <text x="305" y="126" fontSize="11" fontWeight="600" fill="#3498db">94.1%</text>
+                      <text x="435" y="99" fontSize="11" fontWeight="600" fill="#3498db">100%</text>
+                      
+                      {/* Axis titles */}
+                      <text x="300" y="370" textAnchor="middle" fontSize="14" fontWeight="600" fill="#2c3e50">分類</text>
+                      <text x="40" y="185" textAnchor="middle" fontSize="14" fontWeight="600" fill="#2c3e50" transform="rotate(-90 40 185)">在庫価値 (¥)</text>
+                      <text x="560" y="185" textAnchor="middle" fontSize="14" fontWeight="600" fill="#3498db" transform="rotate(90 560 185)">累積割合 (%)</text>
                     </svg>
                   </div>
                   
-                  <div className="abc-legend">
-                    {mockReportData.abcAnalysis.map((item) => (
-                      <div key={item.category} className={`legend-item abc-${item.category.toLowerCase()}`}>
-                        <div className="legend-color"></div>
-                        <div className="legend-content">
-                          <div className="legend-header">
-                            <span className="legend-label">クラス {item.category}</span>
-                            <span className="legend-percentage">{item.percentage}%</span>
+                  <div className="pareto-legend">
+                    <div className="pareto-summary">
+                      <h4>🎯 80-20ルール分析</h4>
+                      <p>クラスA (15.6%のアイテム) が全体価値の70.1%を占める</p>
+                    </div>
+                    
+                    <div className="pareto-details">
+                      {mockReportData.abcAnalysis.map((item, index) => {
+                        const cumulative = index === 0 ? 70.1 : index === 1 ? 94.1 : 100;
+                        return (
+                          <div key={item.category} className={`pareto-item abc-${item.category.toLowerCase()}`}>
+                            <div className="pareto-color"></div>
+                            <div className="pareto-content">
+                              <div className="pareto-header">
+                                <span className="pareto-label">クラス {item.category}</span>
+                                <span className="pareto-cumulative">{cumulative}%</span>
+                              </div>
+                              <div className="pareto-stats">
+                                <span>{item.items} アイテム ({item.percentage}%)</span>
+                                <span>¥{item.value.toLocaleString()}</span>
+                              </div>
+                            </div>
                           </div>
-                          <div className="legend-details">
-                            <div>{item.items} アイテム</div>
-                            <div>¥{item.value.toLocaleString()}</div>
-                            <div className="legend-description">{item.description}</div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -521,65 +576,109 @@ function App() {
                 </p>
                 <div className="radar-chart-container">
                   <div className="radar-chart">
-                    <svg viewBox="0 0 300 300" className="radar-svg">
-                      {/* Background grid */}
+                    <svg viewBox="0 0 400 400" className="radar-svg">
+                      {/* Background gradient */}
                       <defs>
-                        <pattern id="radarGrid" x="0" y="0" width="300" height="300">
-                          <circle cx="150" cy="150" r="120" fill="none" stroke="#e1e8ed" strokeWidth="1"/>
-                          <circle cx="150" cy="150" r="90" fill="none" stroke="#e1e8ed" strokeWidth="1"/>
-                          <circle cx="150" cy="150" r="60" fill="none" stroke="#e1e8ed" strokeWidth="1"/>
-                          <circle cx="150" cy="150" r="30" fill="none" stroke="#e1e8ed" strokeWidth="1"/>
-                          <line x1="150" y1="30" x2="150" y2="270" stroke="#e1e8ed" strokeWidth="1"/>
-                          <line x1="30" y1="150" x2="270" y2="150" stroke="#e1e8ed" strokeWidth="1"/>
-                          <line x1="63" y1="63" x2="237" y2="237" stroke="#e1e8ed" strokeWidth="1"/>
-                          <line x1="237" y1="63" x2="63" y2="237" stroke="#e1e8ed" strokeWidth="1"/>
-                        </pattern>
+                        <radialGradient id="radarBackground" cx="50%" cy="50%" r="50%">
+                          <stop offset="0%" stopColor="rgba(52, 152, 219, 0.05)" />
+                          <stop offset="100%" stopColor="rgba(52, 152, 219, 0.15)" />
+                        </radialGradient>
+                        
+                        <filter id="radarShadow">
+                          <feDropShadow dx="0" dy="2" stdDeviation="4" floodColor="rgba(0,0,0,0.1)"/>
+                        </filter>
+                        
+                        <linearGradient id="dataPolygonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="rgba(52, 152, 219, 0.4)" />
+                          <stop offset="100%" stopColor="rgba(52, 152, 219, 0.1)" />
+                        </linearGradient>
                       </defs>
                       
-                      <rect width="300" height="300" fill="url(#radarGrid)"/>
+                      {/* Background circle */}
+                      <circle cx="200" cy="200" r="160" fill="url(#radarBackground)" filter="url(#radarShadow)"/>
+                      
+                      {/* Concentric circles */}
+                      <circle cx="200" cy="200" r="160" fill="none" stroke="#3498db" strokeWidth="2" opacity="0.3"/>
+                      <circle cx="200" cy="200" r="128" fill="none" stroke="#3498db" strokeWidth="1.5" opacity="0.4"/>
+                      <circle cx="200" cy="200" r="96" fill="none" stroke="#3498db" strokeWidth="1.5" opacity="0.5"/>
+                      <circle cx="200" cy="200" r="64" fill="none" stroke="#3498db" strokeWidth="1.5" opacity="0.6"/>
+                      <circle cx="200" cy="200" r="32" fill="none" stroke="#3498db" strokeWidth="1.5" opacity="0.7"/>
+                      
+                      {/* Radial lines */}
+                      <line x1="200" y1="40" x2="200" y2="360" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
+                      <line x1="40" y1="200" x2="360" y2="200" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
+                      <line x1="87" y1="87" x2="313" y2="313" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
+                      <line x1="313" y1="87" x2="87" y2="313" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
+                      <line x1="138" y1="62" x2="262" y2="338" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
+                      <line x1="262" y1="62" x2="138" y2="338" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
+                      <line x1="338" y1="138" x2="62" y2="262" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
+                      <line x1="62" y1="138" x2="338" y2="262" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
+                      <line x1="354" y1="169" x2="46" y2="231" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
+                      <line x1="46" y1="169" x2="354" y2="231" stroke="#3498db" strokeWidth="1" opacity="0.4"/>
                       
                       {/* Data polygon */}
                       <polygon
-                        points="150,42 232,81 232,219 150,258 68,219 68,81"
-                        fill="rgba(52, 152, 219, 0.2)"
+                        points="200,55 306,108 306,292 200,345 94,292 94,108"
+                        fill="url(#dataPolygonGradient)"
                         stroke="#3498db"
-                        strokeWidth="2"
+                        strokeWidth="3"
+                        filter="url(#radarShadow)"
                       />
                       
                       {/* Data points */}
                       {mockReportData.stockLevel.map((item, index) => {
                         const angles = [0, 72, 144, 216, 288]; // 5 points, 72 degrees apart
                         const angle = (angles[index] - 90) * (Math.PI / 180); // Convert to radians and adjust for top start
-                        const radius = (item.percentage / 100) * 120; // Scale to chart size
-                        const x = 150 + radius * Math.cos(angle);
-                        const y = 150 + radius * Math.sin(angle);
+                        const radius = (item.percentage / 100) * 160; // Scale to chart size
+                        const x = 200 + radius * Math.cos(angle);
+                        const y = 200 + radius * Math.sin(angle);
                         
                         return (
                           <circle
                             key={index}
                             cx={x}
                             cy={y}
-                            r="6"
+                            r="8"
                             fill={item.percentage < 80 ? '#e74c3c' : item.percentage > 95 ? '#f39c12' : '#27ae60'}
                             stroke="white"
-                            strokeWidth="2"
+                            strokeWidth="3"
                             className="radar-point"
+                            filter="url(#radarShadow)"
                           />
                         );
                       })}
                       
-                      {/* Labels */}
-                      <text x="150" y="25" textAnchor="middle" fontSize="12" fontWeight="600" fill="#2c3e50">原材料</text>
-                      <text x="260" y="90" textAnchor="middle" fontSize="12" fontWeight="600" fill="#2c3e50">部品</text>
-                      <text x="260" y="220" textAnchor="middle" fontSize="12" fontWeight="600" fill="#2c3e50">完成品</text>
-                      <text x="150" y="285" textAnchor="middle" fontSize="12" fontWeight="600" fill="#2c3e50">工具</text>
-                      <text x="40" y="220" textAnchor="middle" fontSize="12" fontWeight="600" fill="#2c3e50">消耗品</text>
+                      {/* Labels with background */}
+                      <circle cx="200" cy="25" r="15" fill="white" opacity="0.9"/>
+                      <text x="200" y="30" textAnchor="middle" fontSize="12" fontWeight="700" fill="#2c3e50">原材料</text>
                       
-                      {/* Percentage labels */}
-                      <text x="155" y="55" fontSize="10" fill="#7f8c8d">100%</text>
-                      <text x="155" y="85" fontSize="10" fill="#7f8c8d">75%</text>
-                      <text x="155" y="115" fontSize="10" fill="#7f8c8d">50%</text>
-                      <text x="155" y="145" fontSize="10" fill="#7f8c8d">25%</text>
+                      <circle cx="340" cy="108" r="20" fill="white" opacity="0.9"/>
+                      <text x="340" y="113" textAnchor="middle" fontSize="12" fontWeight="700" fill="#2c3e50">部品</text>
+                      
+                      <circle cx="340" cy="292" r="25" fill="white" opacity="0.9"/>
+                      <text x="340" y="297" textAnchor="middle" fontSize="12" fontWeight="700" fill="#2c3e50">完成品</text>
+                      
+                      <circle cx="200" cy="375" r="15" fill="white" opacity="0.9"/>
+                      <text x="200" y="380" textAnchor="middle" fontSize="12" fontWeight="700" fill="#2c3e50">工具</text>
+                      
+                      <circle cx="60" cy="292" r="20" fill="white" opacity="0.9"/>
+                      <text x="60" y="297" textAnchor="middle" fontSize="12" fontWeight="700" fill="#2c3e50">消耗品</text>
+                      
+                      {/* Percentage labels with background */}
+                      <rect x="205" y="50" width="30" height="16" fill="white" opacity="0.8" rx="3"/>
+                      <text x="220" y="61" textAnchor="middle" fontSize="11" fontWeight="600" fill="#7f8c8d">100%</text>
+                      
+                      <rect x="205" y="82" width="25" height="16" fill="white" opacity="0.8" rx="3"/>
+                      <text x="217" y="93" textAnchor="middle" fontSize="11" fontWeight="600" fill="#7f8c8d">80%</text>
+                      
+                      <rect x="205" y="114" width="25" height="16" fill="white" opacity="0.8" rx="3"/>
+                      <text x="217" y="125" textAnchor="middle" fontSize="11" fontWeight="600" fill="#7f8c8d">60%</text>
+                      
+                      <rect x="205" y="146" width="25" height="16" fill="white" opacity="0.8" rx="3"/>
+                      <text x="217" y="157" textAnchor="middle" fontSize="11" fontWeight="600" fill="#7f8c8d">40%</text>
+                      
+                      <rect x="205" y="178" width="25" height="16" fill="white" opacity="0.8" rx="3"/>
+                      <text x="217" y="189" textAnchor="middle" fontSize="11" fontWeight="600" fill="#7f8c8d">20%</text>
                     </svg>
                   </div>
                   
