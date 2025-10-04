@@ -1,6 +1,6 @@
 {
-  "short_name": "セキュアモックAPI",
-  "name": "AWS Amplify セキュアモックAPIアプリケーション",
+  "short_name": "公金チューチュー",
+  "name": "公金チューチュー - 補助金・助成金情報検索システム",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,6 +10,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#3b82f6",
+  "background_color": "#f5f7fa"
 }
