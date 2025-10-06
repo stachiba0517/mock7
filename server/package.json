@@ -1,13 +1,14 @@
 {
   "name": "mock7-backend",
   "version": "1.0.0",
-  "description": "Backend API for subsidy information system",
+  "description": "Backend API for subsidy information system with Aurora Serverless",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "db:migrate": "node src/db/migrate.js"
   },
-  "keywords": ["subsidy", "api", "mock"],
+  "keywords": ["subsidy", "api", "aurora", "serverless"],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -15,10 +16,11 @@
     "cors": "^2.8.5",
     "axios": "^1.6.0",
     "cheerio": "^1.0.0-rc.12",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+    "mysql2": "^3.6.5",
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
   }
 }
-

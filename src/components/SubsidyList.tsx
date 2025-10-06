@@ -19,6 +19,12 @@ const SubsidyList: React.FC = () => {
   
   // 選択された補助金
   const [selectedSubsidy, setSelectedSubsidy] = useState<Subsidy | null>(null);
+  
+  // ダークモード状態
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  
+  // 検索条件表示状態
+  const [isFilterVisible, setIsFilterVisible] = useState<boolean>(true);
 
   // 初期データ読み込み
   useEffect(() => {
@@ -112,81 +118,95 @@ const SubsidyList: React.FC = () => {
     setSearchKeyword('');
   };
 
+
+  const toggleFilter = () => {
+    setIsFilterVisible(!isFilterVisible);
+  };
+
   return (
-    <div className="subsidy-list-container">
+    <div className={`subsidy-list-container ${isDarkMode ? 'dark-mode' : ''}`}>
+      <div className="header-toggle-wrapper">
+        <button onClick={toggleFilter} className="header-toggle-btn">
+          {isFilterVisible ? '▲ 検索条件を隠す' : '▼ 検索条件を表示'}
+        </button>
+      </div>
+      
       <header className="subsidy-header">
         <h2>💰 補助金・助成金一覧</h2>
         <p>福井県及び全国の補助金・助成金情報を検索できます</p>
       </header>
 
-      {/* 検索・フィルターセクション */}
-      <div className="filter-section">
-        <div className="filter-row">
-          <div className="filter-group">
-            <label>キーワード検索</label>
-            <input
-              type="text"
-              placeholder="補助金名、説明、実施機関で検索..."
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              className="search-input"
-            />
+      {isFilterVisible && (
+        <div className="filter-section-container">
+        {/* 検索・フィルターセクション */}
+        <div className="filter-section">
+          <div className="filter-row">
+            <div className="filter-group">
+              <label>キーワード検索</label>
+              <input
+                type="text"
+                placeholder="補助金名、説明、実施機関で検索..."
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="search-input"
+              />
+            </div>
+          </div>
+
+          <div className="filter-row">
+            <div className="filter-group">
+              <label>ステータス</label>
+              <select 
+                value={statusFilter} 
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="filter-select"
+              >
+                <option value="">すべて</option>
+                <option value="active">募集中</option>
+                <option value="upcoming">募集予定</option>
+                <option value="expired">終了</option>
+              </select>
+            </div>
+
+            <div className="filter-group">
+              <label>カテゴリ</label>
+              <select 
+                value={categoryFilter} 
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="filter-select"
+              >
+                <option value="">すべて</option>
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="filter-group">
+              <label>都道府県</label>
+              <select 
+                value={prefectureFilter} 
+                onChange={(e) => setPrefectureFilter(e.target.value)}
+                className="filter-select"
+              >
+                <option value="">すべて</option>
+                {prefectures.map(pref => (
+                  <option key={pref} value={pref}>{pref}</option>
+                ))}
+              </select>
+            </div>
+
+            <button onClick={handleReset} className="reset-button">
+              リセット
+            </button>
+                 {/* 結果表示 */}
+          <div className="results-summary">
+            <p>{loading ? '読み込み中...' : `${subsidies.length}件の補助金が見つかりました`}</p>
           </div>
         </div>
-
-        <div className="filter-row">
-          <div className="filter-group">
-            <label>ステータス</label>
-            <select 
-              value={statusFilter} 
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="filter-select"
-            >
-              <option value="">すべて</option>
-              <option value="active">募集中</option>
-              <option value="upcoming">募集予定</option>
-              <option value="expired">終了</option>
-            </select>
           </div>
-
-          <div className="filter-group">
-            <label>カテゴリ</label>
-            <select 
-              value={categoryFilter} 
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="filter-select"
-            >
-              <option value="">すべて</option>
-              {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="filter-group">
-            <label>都道府県</label>
-            <select 
-              value={prefectureFilter} 
-              onChange={(e) => setPrefectureFilter(e.target.value)}
-              className="filter-select"
-            >
-              <option value="">すべて</option>
-              {prefectures.map(pref => (
-                <option key={pref} value={pref}>{pref}</option>
-              ))}
-            </select>
-          </div>
-
-          <button onClick={handleReset} className="reset-button">
-            リセット
-          </button>
         </div>
-      </div>
-
-      {/* 結果表示 */}
-      <div className="results-summary">
-        <p>{loading ? '読み込み中...' : `${subsidies.length}件の補助金が見つかりました`}</p>
-      </div>
+      )}
 
       {/* エラー表示 */}
       {error && (

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export interface Subsidy {
   id: string;
@@ -43,6 +43,38 @@ export interface SingleSubsidyResponse {
 export interface MetaResponse {
   success: boolean;
   data: string[];
+}
+
+export interface BusinessProfile {
+  url: string;
+  title: string;
+  businessType: Array<{
+    type: string;
+    confidence: number;
+  }>;
+  keywords: string[];
+  detectedCategories: Array<{
+    category: string;
+    confidence: number;
+  }>;
+  suggestedPrefecture: string | null;
+  confidence: number;
+}
+
+export interface MatchedSubsidy {
+  subsidy: Subsidy;
+  score: number;
+  matchReasons: string[];
+  matchPercentage: number;
+}
+
+export interface AnalysisResponse {
+  success: boolean;
+  data: {
+    profile: BusinessProfile;
+    matchedSubsidies: MatchedSubsidy[];
+    analysisDate: string;
+  };
 }
 
 class SubsidyAPI {
@@ -110,6 +142,8 @@ class SubsidyAPI {
     }
   }
 
+
+
   // ヘルスチェック
   async healthCheck(): Promise<boolean> {
     try {
@@ -118,6 +152,23 @@ class SubsidyAPI {
     } catch (error) {
       console.error('Health check failed:', error);
       return false;
+    }
+  }
+
+  // WebサイトURLを解析して最適な補助金を提案
+  async analyzeWebsite(url: string): Promise<AnalysisResponse['data']> {
+    try {
+      // this.baseURL = 'http://localhost:5000/api' なので
+      // http://localhost:5000/api/analysis/analyze-website を作る
+      const baseUrl = this.baseURL.split('/api')[0]; // 'http://localhost:5000'
+      const response = await axios.post<AnalysisResponse>(
+        `${baseUrl}/api/analysis/analyze-website`,
+        { url }
+      );
+      return response.data.data;
+    } catch (error: any) {
+      console.error('Website analysis error:', error);
+      throw new Error(error.response?.data?.error || 'Webサイトの解析に失敗しました');
     }
   }
 }
